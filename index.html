@@ -68,7 +68,7 @@ const IRIS_EYES = {
     {eyes:[[999,638,24],[1118,640,24]],travel:[6,4]},
     {eyes:[[107,944,34],[210,944,34]],travel:[8,7]},
     {eyes:[[424,965,18],[508,966,18]],travel:[4,2]},
-    {eyes:[[689,1022,18],[801,1015,18]],travel:[5,3]},
+    {eyes:[[686,1022,16,[-4,1,-2,2]],[801,1015,18]],travel:[5,3]},
   ],
   muertos: [
     {eyes:[[132,263,24],[202,263,24]],travel:[5,5]},
@@ -170,9 +170,11 @@ function draw(now) {
       const d = Math.max(80, Math.hypot(vx, vy));
       const lookX = vx / d, lookY = vy / d;
       const blink = blinkScale(i, now, theme === 'muertos' ? 1.1 : .3);
-      entry.eyes.forEach(([x, y, size]) => {
+      entry.eyes.forEach(([x, y, size, bounds]) => {
+        const mx = bounds ? Math.max(bounds[0], Math.min(bounds[1], lookX * entry.travel[0])) : lookX * entry.travel[0];
+        const my = bounds ? Math.max(bounds[2], Math.min(bounds[3], lookY * entry.travel[1])) : lookY * entry.travel[1];
         ctx.save();
-        ctx.translate(x + lookX * entry.travel[0], y + lookY * entry.travel[1]);
+        ctx.translate(x + mx, y + my);
         ctx.scale(1, blink);
         ctx.drawImage(images.IR, -size / 2, -size / 2, size, size);
         ctx.restore();
